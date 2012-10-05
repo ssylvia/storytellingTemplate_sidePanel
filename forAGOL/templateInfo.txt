@@ -1,0 +1,11 @@
+Title: Storytelling Side Panel
+
+
+Short Description: 
+A storytelling template for publishing a web map to a general audience; includes text and legend panel. Supports time enabled maps and multiple webmaps with tabs.
+
+
+Long Description:
+This storytelling template enables users to place a web map into a viewer, and is useful when you need to provide a few more words than just a heading. A side panel provides ample space for a legend and scrollable text.This template also supports multiple webmaps. Users click on a series of tabs to sequentially view the thematic maps. Each map is shown with a text description and map legend. If the user zooms into one map and then switches theme, the new map is automatically shown at a matching scale and extent.
+
+This template is part of the ArcGIS.com template gallery. These templates can be accessed from the ArcGIS.com map viewer Share window or from the Web Application Templates group. When accessed from the map viewer the templates can be published as a hosted application or you can download the template ZIP file to install on your web server. 
