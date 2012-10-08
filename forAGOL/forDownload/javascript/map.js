@@ -25,34 +25,34 @@ var toBoolean = function (str) {
 
 function initMap(){
 	patchID();
-	
+
 	i18n = dojo.i18n.getLocalization("esriTemplate","template");
 	dojo.byId('loading').innerHTML = i18n.viewer.loading.message;
 	dojo.byId('legendHeaderText').innerHTML = i18n.viewer.sidePanel.legendHeader;
-      
+
       if(configOptions.geometryserviceurl && location.protocol === "https:"){
         configOptions.geometryserviceurl = configOptions.geometryserviceurl.replace('http:','https:');
       }
-      esri.config.defaults.geometryService = new esri.tasks.GeometryService(configOptions.geometryserviceurl);  
-      
+      esri.config.defaults.geometryService = new esri.tasks.GeometryService(configOptions.geometryserviceurl);
+
 
 
       if(!configOptions.sharingurl){
         configOptions.sharingurl = location.protocol + '//' + location.host + "/sharing/content/items";
       }
       esri.arcgis.utils.arcgisUrl = configOptions.sharingurl;
-       
-      if(!configOptions.proxyurl){   
+
+      if(!configOptions.proxyurl){
         configOptions.proxyurl = location.protocol + '//' + location.host + "/sharing/proxy";
       }
 
       esri.config.defaults.io.proxyUrl =  configOptions.proxyurl;
 
       esri.config.defaults.io.alwaysUseProxy = false;
-      
+
       urlObject = esri.urlToObject(document.location.href);
       urlObject.query = urlObject.query || {};
-      
+
       if(urlObject.query.title){
         configOptions.title = urlObject.query.title;
       }
@@ -100,22 +100,22 @@ function initMap(){
 				  configOptions.tabTitles[i] = {"title": ""};
 			  }
 			});
-		  }	
-      } 
-      if(urlObject.query.bingMapsKey){
-        configOptions.bingmapskey = urlObject.query.bingMapsKey;      
+		  }
       }
-	  
+      if(urlObject.query.bingMapsKey){
+        configOptions.bingmapskey = urlObject.query.bingMapsKey;
+      }
+
 	createMap();
 }
 
 function createMap(){
 	dojo.forEach(configOptions.webmaps, function(arg,i){
-		
+
 		if(configOptions.tabTitles[i] == null){
 			configOptions.tabTitles[i] = {"title": ""};
 		}
-		
+
 		dojo.place("<div id='mapDiv"+i+"' class='map'></div>",dojo.byId('mapPane'),"last");
 		if (configOptions.webmaps.length > 1){
 			dojo.place("<h3 id='title"+i+"' class='mapTitle'></h3>",dojo.byId('descriptionPanel'),"last");
@@ -124,7 +124,7 @@ function createMap(){
 		}
 		dojo.place("<div id='description"+i+"' class='description'></div>",dojo.byId('descriptionPanel'),"last");
 		dojo.place("<div id='legend"+i+"' class='legend'></div>",dojo.byId('legendPanel'),"last");
-		
+
 		var mapDeferred = esri.arcgis.utils.createMap(arg.id, "mapDiv"+i, {
 			mapOptions: {
 				slider: true,
@@ -134,19 +134,19 @@ function createMap(){
 			ignorePopups:false,
 			bingMapsKey: configOptions.bingmapskey
 		});
-		
+
 		mapDeferred.addCallback(function (response) {
-			
+
 			var map = response.map
 			_maps[i] = map;
-			
+
 			dojo.connect(map,'onClick',stopTime);
 			dojo.connect(map,'onExtentChange',syncExtents)
 			dojo.connect(map,"onUpdateEnd",function(){
 				mapLoaded();
 				playAnimation();
 			});
-			
+
 			if (i == 0){
 				document.title = configOptions.title|| response.itemInfo.item.title || "";
         		dojo.byId("title").innerHTML = configOptions.title ||response.itemInfo.item.title;
@@ -162,15 +162,15 @@ function createMap(){
 				dojo.byId("title"+i).innerHTML = response.itemInfo.item.title || "";
 				dojo.byId("description"+i).innerHTML = response.itemInfo.item.description || "";
 			}
-			
+
 			var layers = response.itemInfo.itemData.operationalLayers;
-			
+
 			if(response.itemInfo.itemData.widgets && response.itemInfo.itemData.widgets.timeSlider){
 				_timeProperties[i] =  response.itemInfo.itemData.widgets.timeSlider.properties;
 				timeInterface = true;
 			}
 			addTabsAndTime();
-			
+
 			if(map.loaded){
           		initUI(layers,i,map);
         	}
@@ -178,8 +178,8 @@ function createMap(){
           		dojo.connect(map,"onLoad",function(){
 					initUI(layers,i,map);
 				});
-        
-			}		
+
+			}
         	//resize the map when the browser resizes
 			dojo.connect(dijit.byId('mapPane'), 'resize', function(){
 				dojo.forEach(_maps,function(map){
@@ -189,7 +189,7 @@ function createMap(){
 				});
 				centerTimeDisplay();
 			});
-       
+
 	  	});
 
       mapDeferred.addErrback(function (error) {
@@ -201,9 +201,9 @@ function createMap(){
 		      alert(i18n.viewer.errors.timeout);
 		  }
       });
-		
+
 	});
-	
+
 	setupLayout();
 }
 
@@ -211,13 +211,13 @@ function createMap(){
 function initUI(layers,index,map) {
 	//add chrome theme for popup
     dojo.addClass(map.infoWindow.domNode, "chrome");
-    //add the scalebar 
+    //add the scalebar
     var scalebar = new esri.dijit.Scalebar({
 		map: map,
         scalebarUnit: i18n.viewer.main.scaleBarUnits //metric or english
-    }); 
+    });
 
-    var layerInfo = buildLayersList(layers);      
+    var layerInfo = buildLayersList(layers);
 
     if(layerInfo.length > 0){
 		var legendDijit = new esri.dijit.Legend({
@@ -234,96 +234,96 @@ function initUI(layers,index,map) {
 			if(cm == null){
 				cm = index;
 			}
-			
+
 			var startTime = _timeProperties[index].startTime;
 			var endTime = _timeProperties[index].endTime;
 		    var fullTimeExtent = new esri.TimeExtent(new Date(startTime), new Date(endTime));
 			map.setTimeExtent(fullTimeExtent);
-			
+
 			timeSlider = new esri.dijit.TimeSlider({
 				style: "width: 100%;",
 				loop: configOptions.loop
 		  	}, dojo.byId("timeSliderDiv"));
-			
+
 			map.setTimeSlider(timeSlider);
-			
+
 			timeSlider.setThumbCount(_timeProperties[index].thumbCount);
 		    timeSlider.setThumbMovingRate(_timeProperties[index].thumbMovingRate);
-			
+
 			if(_timeProperties[index].numberOfStops){
 				timeSlider.createTimeStopsByCount(fullTimeExtent,_timeProperties[index].numberOfStops);
 		  	}
 			else{
 				timeSlider.createTimeStopsByTimeInterval(fullTimeExtent,_timeProperties[index].timeStopInterval.interval,_timeProperties[index].timeStopInterval.units);
 		  	}
-			
+
 		  	if(timeSlider.thumbCount == 2){
 				timeSlider.setThumbIndexes([0,1]);
 		  	}
-			
+
 			dojo.connect(timeSlider,'onTimeExtentChange',function(timeExtent){
-				
+
 				var timeCon = dojo.query("#timeSliderDiv > table > tbody > tr > td");
 				dojo.place("<img id='playPause' class='timeControl' src='images/playIcon.png' alt='' onClick='animate()'>",timeCon[0],'last');
 				dojo.place("<img id='prev' class='timeControl' src='images/prevIcon.png' alt='' onClick='prevTime()'>",timeCon[2],'last');
 				dojo.place("<img id='next' class='timeControl' src='images/nextIcon.png' alt='' onClick='nextTime()'>",timeCon[3],'last');
-				
+
 				_thumbIndexes[cm] = timeSlider.thumbIndexes
 				waitForLoad();
-				var timeString; 
+				var timeString;
 				if(_timeProperties[cm].timeStopInterval !== undefined){
-					switch(_timeProperties[cm].timeStopInterval.units){   
-						case 'esriTimeUnitsCenturies':	
+					switch(_timeProperties[cm].timeStopInterval.units){
+						case 'esriTimeUnitsCenturies':
 			  				datePattern = 'yyyy G'
-			  				break;          
+			  				break;
 						case 'esriTimeUnitsDecades':
 			  				datePattern = 'yyyy'
-			  				break;  
+			  				break;
 			 			case 'esriTimeUnitsYears':
 			  				datePattern = 'MMMM yyyy'
 			 				 break;
-						case 'esriTimeUnitsWeeks':	 
+						case 'esriTimeUnitsWeeks':
 			  				datePattern = 'MMMM d, yyyy'
 			  				break;
 						case 'esriTimeUnitsDays':
 			  				datePattern = 'MMMM d, yyyy'
-			  				break;        
+			  				break;
 						case 'esriTimeUnitsHours':
 			  				datePattern = 'h:m:s.SSS a'
 			  				break;
 						case 'esriTimeUnitsMilliseconds':
 			  				datePattern = 'h:m:s.SSS a'
-			  				break;          
+			  				break;
 						case 'esriTimeUnitsMinutes':
 			  				datePattern = 'h:m:s.SSS a'
-			 				break;          
+			 				break;
 						case 'esriTimeUnitsMonths':
 			  				datePattern = 'MMMM d, y'
-			  				break;          
+			  				break;
 						case 'esriTimeUnitsSeconds':
 			  				datePattern = 'h:m:s.SSS a'
-			  				break;          
+			  				break;
 		  			}
 		   			timeString = formatDate(timeExtent.startTime,datePattern) + " to " + formatDate(timeExtent.endTime,datePattern);
 		  		}
 		  		else{
 					timeString = formatDate(timeExtent.endTime,'MMMM d,yyyy');
 		  		}
-		
+
 			dojo.byId('timeDisplay').innerHTML = timeString;
-			
+
 			centerTimeDisplay();
-				
+
 		  });
-			
+
 			timeSlider.startup();
-			
+
 			dojo.forEach(dojo.query(".timeControl"),function(qry){
 				dojo.style(qry,"display","block");
 			});
 			dojo.place("<div id='timeSliderBlind'></div>",dojo.byId("timeSliderArea"),"last");
 			dojo.style(dojo.byId("timeSliderBlind"),"opacity", "0.8");
-			
+
 			dojo.connect(dojo.byId("next"),'onmousedown',function(){
 				dojo.byId("next").setAttribute("src","images/nextIconDark.png");
 			});
@@ -352,49 +352,55 @@ function initUI(layers,index,map) {
 
 
 
-function buildLayersList(layers){
-        //layers  arg is  response.itemInfo.itemData.operationalLayers;
-        var layerInfos = [];
-        dojo.forEach(layers, function(mapLayer, index){
-          var layerInfo = {};
-          if (mapLayer.featureCollection && mapLayer.type !== "CSV") {
-            if (mapLayer.featureCollection.showLegend === true) {
-              dojo.forEach(mapLayer.featureCollection.layers, function(fcMapLayer){
-                if (fcMapLayer.showLegend !== false) {
+//build a list of layers to dispaly in the legend
+  function buildLayersList(layers){
+
+ //layers  arg is  response.itemInfo.itemData.operationalLayers;
+  var layerInfos = [];
+  dojo.forEach(layers, function (mapLayer, index) {
+      var layerInfo = {};
+      if (mapLayer.featureCollection && mapLayer.type !== "CSV") {
+        if (mapLayer.featureCollection.showLegend === true) {
+            dojo.forEach(mapLayer.featureCollection.layers, function (fcMapLayer) {
+              if (fcMapLayer.showLegend !== false) {
                   layerInfo = {
-                    "layer": fcMapLayer.layerObject,
-                    "title": mapLayer.title,
-                    "defaultSymbol": false
+                      "layer": fcMapLayer.layerObject,
+                      "title": mapLayer.title,
+                      "defaultSymbol": false
                   };
                   if (mapLayer.featureCollection.layers.length > 1) {
-                    layerInfo.title += " - " + fcMapLayer.layerDefinition.name;
+                      layerInfo.title += " - " + fcMapLayer.layerDefinition.name;
                   }
                   layerInfos.push(layerInfo);
-                }
-              });
-            }
-          } else if (mapLayer.showLegend !== false) {
-            layerInfo = {
-              "layer": mapLayer.layerObject,
-              "title": mapLayer.title,
-              "defaultSymbol": false
-            };
-            //does it have layers too? If so check to see if showLegend is false
-            if (mapLayer.layers) {
-              var hideLayers = dojo.map(dojo.filter(mapLayer.layers, function(lyr){
-                return (lyr.showLegend === false);
-              }), function(lyr){
-                return lyr.id
-              });
-              if (hideLayers.length) {
-                layerInfo.hideLayers = hideLayers;
               }
-            }
-            layerInfos.push(layerInfo);
+            });
           }
-        });
-        return layerInfos;
+      } else if (mapLayer.showLegend !== false && mapLayer.layerObject) {
+      var showDefaultSymbol = false;
+      if (mapLayer.layerObject.version < 10.1 && (mapLayer.layerObject instanceof esri.layers.ArcGISDynamicMapServiceLayer || mapLayer.layerObject instanceof esri.layers.ArcGISTiledMapServiceLayer)) {
+        showDefaultSymbol = true;
       }
+      layerInfo = {
+        "layer": mapLayer.layerObject,
+        "title": mapLayer.title,
+        "defaultSymbol": showDefaultSymbol
+      };
+        //does it have layers too? If so check to see if showLegend is false
+        if (mapLayer.layers) {
+            var hideLayers = dojo.map(dojo.filter(mapLayer.layers, function (lyr) {
+                return (lyr.showLegend === false);
+            }), function (lyr) {
+                return lyr.id;
+            });
+            if (hideLayers.length) {
+                layerInfo.hideLayers = hideLayers;
+            }
+        }
+        layerInfos.push(layerInfo);
+    }
+  });
+  return layerInfos;
+  }
 
 
 function formatDate(date,datePattern){
@@ -506,7 +512,7 @@ function prevTime(){
 		timeSlider.pause();
 		dojo.byId("playPause").setAttribute("src","images/playIcon.png");
 		timeSlider.previous();
-	}	
+	}
 }
 
 function syncExtents(){
@@ -529,9 +535,9 @@ function syncExtents(){
 function patchID() {  //patch id manager for use in apps.arcgis.com
        esri.id._isIdProvider = function(server, resource) {
        // server and resource are assumed one of portal domains
- 
+
        var i = -1, j = -1;
- 
+
        dojo.forEach(this._gwDomains, function(domain, idx) {
          if (i === -1 && domain.regex.test(server)) {
            i = idx;
@@ -540,9 +546,9 @@ function patchID() {  //patch id manager for use in apps.arcgis.com
            j = idx;
          }
        });
- 
+
        var retVal = false;
-   
+
        if (i > -1 && j > -1) {
          if (i === 0 || i === 4) {
            if (j === 0 || j === 4) {
@@ -565,11 +571,11 @@ function patchID() {  //patch id manager for use in apps.arcgis.com
            }
          }
        }
- 
+
        return retVal;
-     };    
+     };
     }
-	
+
 	function timeoutError(){
 		if (timeoutComplete == false && mapsLoaded < configOptions.webmaps.length - 1){
 			timeoutComplete = true;
