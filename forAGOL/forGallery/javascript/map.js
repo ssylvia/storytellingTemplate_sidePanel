@@ -121,7 +121,7 @@ function initMap(){
 			   if(response.values.displayDescription !== undefined){configOptions.displayDescription = response.values.displayDescription; }
 			   if(response.values.displayLegend !== undefined) {configOptions.displayLegend = response.values.displayLegend;}
 			   if(response.values.syncMaps !== undefined) {configOptions.syncMaps = response.values.syncMaps;}
-			   if(response.values.webmaps !== undefined) {configOptions.webmaps = getWebMaps(response.values.webmaps);}
+			   if(response.values.webmap !== undefined) {configOptions.webmaps = getWebMaps(response.values.webmap);}
 			   if(response.values.tabs !== undefined) {configOptions.tabTitles = getTabs(response.values.tabs);}
 
 			   createMap();
