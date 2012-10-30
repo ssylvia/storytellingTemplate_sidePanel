@@ -625,7 +625,7 @@ function patchID() {  //patch id manager for use in apps.arcgis.com
 		var previewWebMap = {
 		  id: webmaps
 		};
-		webmapresults = [previewWebMap, previewWebMap, previewWebMap];
+		webmapresults = [previewWebMap];
 	  }
 	  return webmapresults;
 	}
@@ -642,7 +642,7 @@ function patchID() {  //patch id manager for use in apps.arcgis.com
 		var previewTab = {
 		  title: tabs
 		};
-		tabresults = [previewTab, previewTab, previewTab];
+		tabresults = [previewTab];
 	  }
 	  return tabresults;
 	}
