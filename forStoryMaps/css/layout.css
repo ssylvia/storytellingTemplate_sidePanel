@@ -43,19 +43,20 @@ h1{
 
 #title{
 	padding-bottom:10px;
-	white-space: nowrap;  
-    overflow: hidden;  
+	white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
     -o-text-overflow:ellipsis;
 }
 
-#subtitle{ 
+#subtitle{
 	color:#fff;
-    overflow: hidden;  
+    overflow: hidden;
 }
 
 #logoArea{
 	width:150px !important;
+    overflow:hidden;
 }
 
 #social,#logo{
@@ -139,7 +140,7 @@ h1{
 	height:100%;
 	font-size:0.9em;
 }
-	  
+
 #descriptionPanel {
 	height:45%;
 	overflow:auto;
@@ -161,12 +162,12 @@ h1{
 	background:#444;
     padding:5px 10px 5px 10px;
 }
-	  
+
 #legendPanel{
 	position:relative;
 	overflow:auto;
 }
-	  
+
 .legend {
 	display:none;
 	padding:20px;
@@ -212,13 +213,13 @@ h1{
     top:40%;
 	text-align:center;
 }
-		
+
 #loadingDialog{
 	margin:auto;
 	background-color:#dadada;
-	width:300px	
+	width:300px
 }
-		
+
 #loadingHeader{
 	background-color:#444;
 	color:#fff;
@@ -226,11 +227,11 @@ h1{
 	padding-bottom:10px;
 	width:300px;
 }
-		
+
 #loading{
 	padding-top:10px;
 }
-		
+
 #loadingImg{
 	margin-top:5px;
 	padding-bottom:10px;
