@@ -4,11 +4,11 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=7,IE=9">
 	<title></title>
-    <link rel="stylesheet" type="text/css" href="//serverapi.arcgisonline.com/jsapi/arcgis/3.2/js/dojo/dijit/themes/tundra/tundra.css">
-    <link rel="stylesheet" type="text/css" href="//serverapi.arcgisonline.com/jsapi/arcgis/3.2/js/esri/css/esri.css" />
+    <link rel="stylesheet" type="text/css" href="//servicesbeta.esri.com/jsapi/arcgis/3.3/js/dojo/dijit/themes/tundra/tundra.css">
+    <link rel="stylesheet" type="text/css" href="//servicesbeta.esri.com/jsapi/arcgis/3.3/js/esri/css/esri.css" />
     <link rel="stylesheet" type="text/css" href="css/layout.css"/>
     <link rel="stylesheet" type="text/css" href="css/popup.css"/>
-    
+
     <script type="text/javascript">
       var dojoConfig = {
 		  parseOnLoad: true,
@@ -17,17 +17,17 @@
 		  ]
 		};
     </script>
-    <script type="text/javascript" src="//serverapi.arcgisonline.com/jsapi/arcgis/?v=3.2compact"></script>
+    <script type="text/javascript" src="//servicesbeta.esri.com/jsapi/arcgis/?v=3.3compact"></script>
 	<script type="text/javascript" src="javascript/map.js"></script>
     <script type="text/javascript" src="javascript/layout.js"></script>
     <script type="text/javascript">
     var configOptions;
-    
+
     function init(){
-    
+
       configOptions = {
 		//The id for the web mapping applciation item that contains configuration info - in most
-        //cases this will be null. 
+        //cases this will be null.
         appid:"",
         //The ID for the map from ArcGIS.com
         webmaps : [{
@@ -55,26 +55,26 @@
         bingmapskey : "Akt3ZoeZ089qyG3zWQZSWpwV3r864AHStal7Aon21-Fyxwq_KdydAH32LTwhieA8",
         //specify a proxy url if needed
         proxyurl:"",
-        //specify the url to a geometry service 
+        //specify the url to a geometry service
         geometryserviceurl:"http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer",
        //Modify this to point to your sharing service URL if you are using the portal
         sharingurl :""
       };
-      
+
        initMap();
    }
 
-      //show map on load 
+      //show map on load
       dojo.addOnLoad(init);
     </script>
   </head>
 
   <body onResize="resetLayout()" class="tundra">
     <div id="mainWindow" dojotype="dijit.layout.BorderContainer" design="headline" gutters="false">
-    
+
       <!--Banner-->
       <div id="banner" dojotype="dijit.layout.BorderContainer" gutters="false" region="top">
-      
+
         <!--Header-->
       	<div id="headerArea" dojotype="dijit.layout.BorderContainer" region="top">
           <div id="titleText" dojotype="dijit.layout.ContentPane" region="center">
@@ -84,21 +84,21 @@
           <div id="logoArea" dojotype="dijit.layout.ContentPane" region="right">
           </div><!--/logoArea-->
         </div><!--/header-->
-        
+
         <!--Time Slider-->
         <div id="timeSliderArea" dojotype="dijit.layout.ContentPane" region="center">
         	<div id="timeSliderDiv"></div>
         </div><!--/timeSliderArea-->
-        
+
         <!--Tab Area-->
         <div id="tabArea" dojotype="dijit.layout.ContentPane" region="bottom">
         </div><!--/tabArea-->
-      
+
       </div><!--/banner-->
-      
+
       <!--Content-->
       <div id="content" dojotype="dijit.layout.BorderContainer" gutters="false" region="center">
-      
+
       	<!--Sidebar Section-->
         <div dojotype="dijit.layout.ContentPane" id="leftPane" region="left">
           <div id="descriptionPanel">
@@ -109,17 +109,17 @@
           <div id="legendPanel">
           </div><!--/legendPanel-->
         </div><!--/leftPane-->
-        
+
         <!--Map Section-->
         <div dojotype="dijit.layout.ContentPane" id="mapPane" region="center">
         	<div id="mapBlind"></div>
             <div id="timeDisplay"></div>
         </div><!--mapPane-->
-            
+
       </div><!--/content-->
-    
+
     </div><!--/main-->
-    
+
     <!--Loading Panel-->
     <div id="loadingCon">
     	<div id="loadingDialog">
@@ -128,7 +128,7 @@
     		<img id="loadingImg" alt="" src="images/progressBar.gif">
    		</div>
     </div>
-    
-    
+
+
   </body>
 </html>
