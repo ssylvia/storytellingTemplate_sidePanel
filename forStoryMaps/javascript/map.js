@@ -76,7 +76,7 @@ function initMap(){
       }
       if(urlObject.query.webmap){
 		  if (dojo.isArray(urlObject.query.webmap) == false){
-        	configOptions.webmaps[0].id = urlObject.query.webmap;
+        	configOptions.webmaps[0].id = getWebMaps(urlObject.query.webmap);
 		  }
 		  else{
 			dojo.forEach(urlObject.query.webmap,function(webmap,i){
