@@ -26,6 +26,27 @@ var toBoolean = function (str) {
 function initMap(){
 	patchID();
 
+    dojo.some(["ar","he"], function(l){
+         if(dojo.locale.indexOf(l) !== -1){
+           configOptions.isRightToLeft = true;
+           return true;
+         }
+       });
+       var dirNode = document.getElementsByTagName("html")[0];
+       if(configOptions.isRightToLeft){
+         dirNode.setAttribute("dir","rtl");
+         dojo.addClass( dirNode,"esriRtl");
+         //Page Specific
+         dijit.byId("leftPane").attr("region","right");
+         dijit.byId("logoArea").attr("region","left");
+       }else{
+         dirNode.setAttribute("dir","ltr");
+         dojo.addClass(dirNode,"esriLtr");
+         //Page Specific
+         dijit.byId("leftPane").attr("region","left");
+         dijit.byId("logoArea").attr("region","right");
+       }
+
 	i18n = dojo.i18n.getLocalization("esriTemplate","template");
 	dojo.byId('loading').innerHTML = i18n.viewer.loading.message;
 	dojo.byId('legendHeaderText').innerHTML = i18n.viewer.sidePanel.legendHeader;
