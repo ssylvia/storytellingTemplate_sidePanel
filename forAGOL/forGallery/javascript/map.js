@@ -75,7 +75,10 @@ function initMap(){
         configOptions.syncMaps = toBoolean(urlObject.query.syncMaps);
       }
       if(urlObject.query.webmap){
-		  if (dojo.isArray(urlObject.query.webmap) == false){
+          if (dojo.isArray(urlObject.query.webmap) == false && getWebMaps(urlObject.query.webmap).length > 1){
+            configOptions.webmaps = getWebMaps(urlObject.query.webmap)
+          }
+		  else if (dojo.isArray(urlObject.query.webmap) == false){
         	configOptions.webmaps[0].id = urlObject.query.webmap;
 		  }
 		  else{

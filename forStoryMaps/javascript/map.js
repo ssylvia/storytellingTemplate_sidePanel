@@ -75,7 +75,10 @@ function initMap(){
         configOptions.syncMaps = toBoolean(urlObject.query.syncMaps);
       }
       if(urlObject.query.webmap){
-		  if (dojo.isArray(urlObject.query.webmap) == false){
+          if (dojo.isArray(urlObject.query.webmap) == false && getWebMaps(urlObject.query.webmap).length > 1){
+            configOptions.webmaps = getWebMaps(urlObject.query.webmap)
+          }
+		  else if (dojo.isArray(urlObject.query.webmap) == false){
         	configOptions.webmaps[0].id = urlObject.query.webmap;
 		  }
 		  else{
@@ -612,6 +615,23 @@ function patchID() {  //patch id manager for use in apps.arcgis.com
        return retVal;
      };
     }
+
+    function getURLWebMaps(webmaps) {
+      if (webmaps.indexOf('%2C') !== -1) {
+    	var mapIds = webmaps.split('%2C');
+		webmapresults = dojo.map(mapIds, function (mapId) {
+		  return {
+			id: mapId
+		  };
+		});
+	  } else {
+		var previewWebMap = {
+		  id: webmaps
+		};
+		webmapresults = [previewWebMap];
+	  }
+	  return webmapresults;
+	}
 
 	function getWebMaps(webmaps) {
 	  if (webmaps.indexOf(',') !== -1) {
