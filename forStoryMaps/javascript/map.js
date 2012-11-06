@@ -76,7 +76,10 @@ function initMap(){
       }
       if(urlObject.query.webmap){
           if (dojo.isArray(urlObject.query.webmap) == false && getWebMaps(urlObject.query.webmap).length > 1){
-            configOptions.webmaps = getWebMaps(urlObject.query.webmap)
+            configOptions.webmaps = getWebMaps(urlObject.query.webmap);
+            if(urlObject.query.tabs){
+              configOptions.tabTitles = getTabs(urlObject.query.tabs);
+            }
           }
 		  else if (dojo.isArray(urlObject.query.webmap) == false){
         	configOptions.webmaps[0].id = urlObject.query.webmap;
