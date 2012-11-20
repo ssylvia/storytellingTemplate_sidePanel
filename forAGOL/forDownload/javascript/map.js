@@ -1,13 +1,8 @@
 dojo.require("esri.map");
-dojo.require("esri.dijit.Legend");
-dojo.require("esri.dijit.Scalebar");
+dojo.require("esri.layout");
+dojo.require("esri.widgets");
 dojo.require("esri.arcgis.utils");
 dojo.require("esri.IdentityManager");
-dojo.require("dijit.dijit"); // optimize: load dijit layer
-dojo.require("dijit.layout.BorderContainer");
-dojo.require("dijit.layout.ContentPane");
-dojo.require("esri.dijit.TimeSlider");
-dojo.require("dojox.fx");
 dojo.requireLocalization("esriTemplate","template");
 
 var urlObject, i18n, _maps = [], timeoutComplete = false, timeSlider, _timeProperties = [], timeInterface = false, _thumbIndexes = [], mapsLoaded = 0, mapsReady = false, isPlaying = false, cm, mapExtent;
