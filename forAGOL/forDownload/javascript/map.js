@@ -1,8 +1,13 @@
 dojo.require("esri.map");
-dojo.require("esri.layout");
-dojo.require("esri.widgets");
+dojo.require("esri.dijit.Legend");
+dojo.require("esri.dijit.Scalebar");
 dojo.require("esri.arcgis.utils");
 dojo.require("esri.IdentityManager");
+dojo.require("dijit.dijit"); // optimize: load dijit layer
+dojo.require("dijit.layout.BorderContainer");
+dojo.require("dijit.layout.ContentPane");
+dojo.require("esri.dijit.TimeSlider");
+dojo.require("dojox.fx");
 dojo.requireLocalization("esriTemplate","template");
 
 var urlObject, i18n, _maps = [], timeoutComplete = false, timeSlider, _timeProperties = [], timeInterface = false, _thumbIndexes = [], mapsLoaded = 0, mapsReady = false, isPlaying = false, cm, mapExtent;
@@ -19,7 +24,7 @@ var toBoolean = function (str) {
 };
 
 function initMap(){
-	patchID();
+    patchID();
 
     dojo.some(["ar","he"], function(l){
          if(dojo.locale.indexOf(l) !== -1){
@@ -96,7 +101,7 @@ function initMap(){
             if(urlObject.query.tabs){
               configOptions.tabTitles = getTabs(urlObject.query.tabs);
             }
-    	  }
+          }
 		  else if (dojo.isArray(urlObject.query.webmap) == false){
         	configOptions.webmaps[0].id = urlObject.query.webmap;
 		  }
@@ -128,7 +133,34 @@ function initMap(){
         configOptions.bingmapskey = urlObject.query.bingMapsKey;
       }
 
-	createMap();
+	  //is an appid specified - if so read json from there
+	  if(configOptions.appid || (urlObject.query && urlObject.query.appid)){
+		var appid = configOptions.appid || urlObject.query.appid;
+		var requestHandle = esri.request({
+		  url: configOptions.sharingurl + "/" + appid + "/data",
+		  content: {f:"json"},
+		  callbackParamName:"callback",
+		  load: function(response){
+			   if(response.values.title !== undefined){configOptions.title = response.values.title;}
+			   if(response.values.subtitle !== undefined){configOptions.subtitle = response.values.subtitle;}
+			   if(response.values.description !== undefined){configOptions.description = response.values.description;}
+			   if(response.values.loop !== undefined){configOptions.loop = response.values.loop;}
+			   if(response.values.displayDescription !== undefined){configOptions.displayDescription = response.values.displayDescription; }
+			   if(response.values.displayLegend !== undefined) {configOptions.displayLegend = response.values.displayLegend;}
+			   if(response.values.syncMaps !== undefined) {configOptions.syncMaps = response.values.syncMaps;}
+			   if(response.values.webmap !== undefined) {configOptions.webmaps = getWebMaps(response.values.webmap);}
+			   if(response.values.tabs !== undefined) {configOptions.tabTitles = getTabs(response.values.tabs);}
+
+			   createMap();
+		  },
+		  error: function(response){
+			var e = response.message;
+		   alert(i18n.viewer.errors.createMap +  response.message);
+		  }
+		});
+		 }else{
+			createMap();
+		 }
 }
 
 function createMap(){
@@ -171,7 +203,7 @@ function createMap(){
 
 			if (i == 0){
 				document.title = configOptions.title|| response.itemInfo.item.title || "";
-        		dojo.byId("title").innerHTML = configOptions.title ||response.itemInfo.item.title;
+        		dojo.byId("title").innerHTML = configOptions.title ||response.itemInfo.item.title || "";
         		dojo.byId("subtitle").innerHTML = configOptions.subtitle|| response.itemInfo.item.snippet || "";
 				dojo.byId("description0").innerHTML = configOptions.description|| response.itemInfo.item.description || "";
 				if (configOptions.webmaps.length > 1){
@@ -215,7 +247,7 @@ function createMap(){
 	  	});
 
       mapDeferred.addErrback(function (error) {
-          alert(i18n.viewer.errors.createMap+ " " + dojo.toJson(error.message));
+          alert(i18n.viewer.errors.createMap + " " + dojo.toJson(error.message));
 		  mapsLoaded = configOptions.webmaps.length - 1;
 		  mapLoaded();
 		  dojo.destroy(dojo.byId("tab"+i));
@@ -425,6 +457,7 @@ function initUI(layers,index,map) {
   }
 
 
+
 function formatDate(date,datePattern){
 	return dojo.date.locale.format(date, {
     	selector: 'date',
@@ -537,6 +570,15 @@ function prevTime(){
 	}
 }
 
+function nextTime(){
+	if(_timeProperties[cm] != null){
+		isPlaying = false;
+		timeSlider.pause();
+		dojo.byId("playPause").setAttribute("src","images/playIcon.png");
+		timeSlider.next();
+	}
+}
+
 function syncExtents(){
 	if (configOptions.syncMaps == true){
 		if (_maps[cm]){
@@ -598,16 +640,8 @@ function patchID() {  //patch id manager for use in apps.arcgis.com
      };
     }
 
-	function timeoutError(){
-		if (timeoutComplete == false && mapsLoaded < configOptions.webmaps.length - 1){
-			timeoutComplete = true;
-			mapsLoaded = configOptions.webmaps.length - 1;
-			mapLoaded();
-		}
-	}
-
-    function getWebMaps(webmaps) {
-      if (webmaps.indexOf(',') !== -1) {
+	function getWebMaps(webmaps) {
+	  if (webmaps.indexOf(',') !== -1) {
 		var mapIds = webmaps.split(',');
 		webmapresults = dojo.map(mapIds, function (mapId) {
 		  return {
@@ -623,8 +657,8 @@ function patchID() {  //patch id manager for use in apps.arcgis.com
 	  return webmapresults;
 	}
 
-    function getTabs(tabs){
-    	if (tabs.indexOf(',') !== -1) {
+	function getTabs(tabs){
+		if (tabs.indexOf(',') !== -1) {
 		var mapIds = tabs.split(',');
 		tabresults = dojo.map(mapIds, function (mapId) {
 		  return {
@@ -638,4 +672,12 @@ function patchID() {  //patch id manager for use in apps.arcgis.com
 		tabresults = [previewTab];
 	  }
 	  return tabresults;
+	}
+
+	function timeoutError(){
+		if (timeoutComplete == false && mapsLoaded < configOptions.webmaps.length - 1){
+			timeoutComplete = true;
+			mapsLoaded = configOptions.webmaps.length - 1;
+			mapLoaded();
+		}
 	}
